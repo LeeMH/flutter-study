@@ -14,6 +14,7 @@ class ContactsDemoV3 extends StatelessWidget {
       onGenerateRoute: (RouteSettings settings) {
         if (ContactDetailPage.routeName == settings.name) {
           Contact c = settings.arguments;
+          print(c.toString());
           return MaterialPageRoute(builder: (context) => ContactDetailPage(c));
         }
 

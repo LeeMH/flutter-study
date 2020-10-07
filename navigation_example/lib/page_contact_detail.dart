@@ -28,7 +28,7 @@ class ContactDetailPage extends StatelessWidget {
           ListTile(
             title: Text('Email'),
             trailing: Text(
-                _contact.phones.isNotEmpty ? _contact.emails.first.value : ''),
+                _contact.emails.isNotEmpty ? _contact.emails.first.value : ''),
           )
         ],
       ),
