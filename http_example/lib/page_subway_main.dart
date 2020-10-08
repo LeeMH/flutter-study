@@ -33,11 +33,7 @@ class SubwayArrival {
 }
 
 class MainPageState extends State<MainPage> {
-  int _rowNum;
-  String _subwayId;
-  String _trainLineName;
-  String _subwayHeading;
-  String _arvlMsg2;
+  SubwayArrival subwayArrival;
 
   String _buildUrl(String station) {
     StringBuffer sb = StringBuffer();
@@ -61,11 +57,7 @@ class MainPageState extends State<MainPage> {
     if (errorMessage['status'] != STATUS_OK) {
       setState(() {
         final String errMessage = errorMessage['message'];
-        _rowNum = -1;
-        _subwayId = '';
-        _trainLineName = '';
-        _subwayHeading = '';
-        _arvlMsg2 = errMessage;
+        subwayArrival = SubwayArrival(-1, '', '', '', errMessage);
       });
 
       return;
@@ -83,17 +75,14 @@ class MainPageState extends State<MainPage> {
     SubwayArrival first = list[0];
 
     setState(() {
-      _rowNum = first.rowNum;
-      _subwayId = first.subwayId;
-      _trainLineName = first.trainLineName;
-      _subwayHeading = first.subwayHeading;
-      _arvlMsg2 = first.arvlMsg2;
+      subwayArrival = first;
     });
   }
 
   @override
   void initState() {
     super.initState();
+    subwayArrival = SubwayArrival(-1, '', '', '', '.....');
     _httpGet(_buildUrl(DEFAULT_STATION));
   }
 
@@ -107,11 +96,11 @@ class MainPageState extends State<MainPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Text('rowNum : $_rowNum'),
-              Text('subwayId : $_subwayId'),
-              Text('tranLineName : $_trainLineName'),
-              Text('subwayHeading : $_subwayHeading'),
-              Text('arvlMsg2 : $_arvlMsg2'),
+              Text('rowNum : ${subwayArrival.rowNum}'),
+              Text('subwayId : ${subwayArrival.subwayId}'),
+              Text('tranLineName : ${subwayArrival.trainLineName}'),
+              Text('subwayHeading : ${subwayArrival.subwayHeading}'),
+              Text('arvlMsg2 : ${subwayArrival.arvlMsg2}'),
             ],
           ),
         ));
