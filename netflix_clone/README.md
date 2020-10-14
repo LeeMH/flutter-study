@@ -106,3 +106,62 @@ class Movie {
   String toString() => "Movie<$title:$keyword>";
 }
 ```
+
+
+## lecture4
+
+홈화면 UX를 실제로 구성한다.
+한개의 화면이지만, 여러개의 layout과 widget으로 구성되어 복잡하게 느껴질수 있다.
+
+우선 홈화면은 ListView > Stack이 놓여진 모습이다.
+상단에 TopBar가 나타나고, CarouselImage 위젯이 그 아래 나타난다.
+CarouselImage에서 출력될 정보는 전 강의에서 정의된 Movie가 List형태로 전송된다.
+```
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        Stack(
+          children: <Widget>[
+            CarouselImage(movies: movies),
+            TopBar(),
+          ],
+        )
+      ],
+    );
+  }
+```
+
+CarouselImage는 당연히 StatefulWidget이다.
+상태 클래스(CarouselImageState)에서 StatefulWidget(CarouselImage)의 속성정보 접근은 widget.썸씽 형태로 접근한다.
+아래는 movies라는 상태를 StatefulWidget에서 가져오는 방법과, 각각의 항목들을 매핑하는 예제이다.
+```
+class _CarouselImageState extends State<CarouselImage> {
+  List<Movie> movies;
+  List<Widget> images;
+  List<String> keywords;
+  List<bool> likes;
+  int _currentPage = 0;
+  String _currentKeyword;
+
+  @override
+  void initState() {
+    super.initState();
+    movies = widget.movies;
+    images = movies.map((m) => Image.asset('./images/' + m.poster)).toList();
+    keywords = movies.map((m) => m.keyword).toList();
+    likes = movies.map((m) => m.like).toList();
+    _currentKeyword = keywords[0];
+  }
+```
+
+실제 UX영역은 아래와 같은 구조로 되어있다.
+우선 세로로 widget들이 배치되므로, Column으로 선언되어 있다.
+이후 아래와 같은 구성으로 분포되어 있다.
+* Padding (공백)
+* CarouselSlider (슬라이드 형식으로 배치될 이미지)
+* Container.Text (keyword 출력용 widget)
+* Container.Row.Buttons (하단의 기능 버튼)
+* Container.Row.Indicator (슬라이더 페이지를 나타낼 인디케이터)
+
+실제로 눈에 보여지는 영역이 어떠한 식으로 배치되어야 하는지 감잡기 좋은 샘플이라고 생각된다.
