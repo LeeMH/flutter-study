@@ -134,7 +134,6 @@ class _CarouselImageState extends State<CarouselImage> {
 List<Widget> makeIndicator(List list, int _currentPage) {
   List<Widget> results = [];
   for (var i = 0; i < list.length; i++) {
-    print('들어옴...$i');
     results.add(
       Container(
         width: 8,
