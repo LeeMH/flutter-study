@@ -54,6 +54,7 @@ TabController는 StatefulWidget임에도 불구하고, setState를 설정하는 
 자세한 내용은 문서등을 참조하면서 업데이트 하자.
 
 
+
 ## lecture2
 
 홈화면을 만든다.
@@ -81,3 +82,27 @@ TabController는 StatefulWidget임에도 불구하고, setState를 설정하는 
 Container안에 Row로 Widget이 배치되는 구조이며, 안정적인 view를 위해 mainAxisAlignment: MainAxisAlignment.spaceBetween 속성을 사용해 각각의 Row 아이템을 배치하였다.
 
 또한, 상단바는 Home화면에서만 사용되므로 별도의 widget으로 분리하지 않고, home_screen파일안에 구현하였다.
+
+
+## lecture3
+
+홈화면을 구성할 Movie 클래스를 생성한다.
+Movie자체가 가진 속성(title, keyword, poster, like)를 클래스로 묶어서 관리한다.
+data와 관련된 소스는 model 폴더에 묶어서 관리한다.
+```
+class Movie {
+  final String title;
+  final String keyword;
+  final String poster;
+  final bool like;
+
+  Movie.fromMap(Map<String, dynamic> map)
+      : title = map['title'],
+        keyword = map['keyword'],
+        poster = map['poster'],
+        like = map['like'];
+
+  @override
+  String toString() => "Movie<$title:$keyword>";
+}
+```
