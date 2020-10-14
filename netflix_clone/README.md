@@ -114,6 +114,9 @@ class Movie {
 한개의 화면이지만, 여러개의 layout과 widget으로 구성되어 복잡하게 느껴질수 있다.
 
 우선 홈화면은 ListView > Stack이 놓여진 모습이다.
+ListView는 스크롤되는 위젯이다. 
+디폴트 스크롤 속성이 vertical이라 별도의 속성 정의는 없다.
+
 상단에 TopBar가 나타나고, CarouselImage 위젯이 그 아래 나타난다.
 CarouselImage에서 출력될 정보는 전 강의에서 정의된 Movie가 List형태로 전송된다.
 ```
@@ -165,3 +168,64 @@ class _CarouselImageState extends State<CarouselImage> {
 * Container.Row.Indicator (슬라이더 페이지를 나타낼 인디케이터)
 
 실제로 눈에 보여지는 영역이 어떠한 식으로 배치되어야 하는지 감잡기 좋은 샘플이라고 생각된다.
+
+
+## lecture5
+
+홈화면 하단의 CircleSlider와 BoxSlider를 추가한다.
+기본적으로 메커니즘은 동일하고, 홈화면의 movies 속성을 받아 ListView에 이미지를 출력한다.
+
+간단한 위젯이지만 배치는 한번 곰곰히 생각하고 감잡아볼 필요가 있다.
+우선 Column으로 배치가된다.
+당연하겠지만, 상단에 Text로 미리보기가 들어가고, 그 하단에 List가 들어간다.
+List는 Column의 자식으로 직접들어갈수가 없기 때문에, Container로 감싸서 들어간다.
+즉, Column > Container > ListView 의 형식으로 들어간다.
+추가로, 스크롤이 가로로 되어야 하기 때문에 scrollDirection 속성을 적용한다. (디폴트는 세로)
+```
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(7),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text('지금 뜨는 컨텐트'),
+          Container(
+            height: 120,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: makeBoxImages(movies),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+```
+
+ListView의 자식들은 클릭 이벤트가 있기때문에 역시 Image만 들어가는 것은 아니다.
+InkWell 위젯을 이용해서 물결퍼짐 효과와 tap이벤트를 정의하고,
+이미지는 다시 Container를 통해 배치된다. 이때 다시 이미지는 Align으로 한번더 감싸서 넣는다.
+미세한 영역의 공백, 정렬등에 따라서 위젯이 중복되므로 상당히 복잡하게 느껴지고도 하지만, 이러한 메타 정보가 없으면 일관된 렌더링이 안되기때문에 우선은 최대한 적응하려 한다.
+```
+List<Widget> makeBoxImages(List<Movie> movies) {
+  List<Widget> results = [];
+
+  for (var ii = 0; ii < movies.length; ii++) {
+    results.add(
+      InkWell(
+        onTap: () {},
+        child: Container(
+          padding: EdgeInsets.only(right: 10),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Image.asset('images/' + movies[ii].poster),
+          ),
+        ),
+      ),
+    );
+  }
+
+  return results;
+}
+```
