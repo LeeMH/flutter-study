@@ -268,3 +268,65 @@ List<Widget> makeBoxImages(List<Movie> movies) {
 아마, 기본적인 위젯 사용법을 뛰어넘고 바로 실습예제를 따라 하기 때문에 더욱 그렇게 느껴질것이라고 생각된다.
 
 디자인적인 부분은 개별위젯을 얼마나 잘 이해하고, 이를 얼마나 잘 배치하면서 사용하냐에 따라 상당한 품질 차이가 날것이라 생각된다.
+
+
+## lecture7
+
+프로필 화면을 출력한다.
+전체적으로 Container > Center > Column 위젯으로 배치된다.
+항목별로 출력되며, 가로로 배치가 필요한 UX는 Row를 이용해서 다시 배치된다.
+
+프로필 수정하기 버튼의 경우, FlatButton 위젯을 생성하고, 자식으로 Container > Row > Icon,SizedBox,Text가 연속으로 배치된 케이스이다.
+
+flutter에서 전형적인 UX 배치 방법이지만, 아직 익숙치는 않다.
+flutter적인 UX구성방법이므로 다시한번 샘플 예제를 기록한다.
+```
+            Container(
+              padding: EdgeInsets.all(10),
+              child: FlatButton(
+                onPressed: () {},
+                child: Container(
+                  color: Colors.red,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        '프로필 수정하기',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+```
+
+그외, linkify를 이용해 클릭 가능한 URL을 표현하고,
+클릭했을때 이벤트처리를 하는 부분도 일반적인 상황이지만 아직은 익숙하지 않다.
+약간이라도 대기가 필요한 경우는 await를 걸어 완료후 다음 로직 수행을 보장하자.
+```
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Linkify(
+                onOpen: (link) async {
+                  if (await canLaunch(link.url)) {
+                    await launch(link.url);
+                  }
+                },
+                text: 'https://github.com/LeeMH',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                linkStyle: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+```
