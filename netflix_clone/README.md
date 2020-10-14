@@ -229,3 +229,42 @@ List<Widget> makeBoxImages(List<Movie> movies) {
   return results;
 }
 ```
+
+
+## lecture6
+
+상세화면을 출력한다.
+
+우선 home화면에서 detail화면으로 넘어가는 이벤트 처리이다.
+기존에 구현된 IconButton의 onPressed 버튼 이벤트를 구현한다.
+이때, 상세화면에서 출력될 영화정보 movie를 넘겨주어야 한다.
+```
+                      IconButton(
+                        icon: Icon(Icons.info),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<Null>(
+                                fullscreenDialog: true,
+                                builder: (BuildContext context) {
+                                  return DetailScreen(
+                                    movie: movies[_currentPage],
+                                  );
+                                }),
+                          );
+                        },
+                      ),
+```
+
+상세화면을 보면 SafeArea라는 낯선 위젯이 하나 보인다.
+자세한 내용은 좀더 살펴봐야 겠지만, 기기별로 화면이 깨지는 현상을 방어해주는 위젯같다.
+특히 Stack을 사용했을경우, 이러한 현상이 발생하는 듯한 글이 보인다.
+참조 : https://clein8.tistory.com/entry/Flutter-Widget-01-SafeArea
+
+그리고, ListView를 통해 각각의 레이어들이 배치된다.
+
+이후 구성은 앞의 강의와 크게 다르지 않다.
+다만, blur처리등 좀더 세련된(?) 처리가 들어간다.
+눈으로 볼때는 1차원 평면이지만, 각각의 작은 항목조차도 위젯이 계속 배치되면서 상당히 복잡하게 느껴진다.
+아마, 기본적인 위젯 사용법을 뛰어넘고 바로 실습예제를 따라 하기 때문에 더욱 그렇게 느껴질것이라고 생각된다.
+
+디자인적인 부분은 개별위젯을 얼마나 잘 이해하고, 이를 얼마나 잘 배치하면서 사용하냐에 따라 상당한 품질 차이가 날것이라 생각된다.
