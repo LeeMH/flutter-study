@@ -8,6 +8,25 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _unfocusedColor = Colors.grey[600];
+  final _usernameFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameFocusNode.addListener(() {
+      setState(() {
+        //Redraw so that the username label reflects the focus state
+      });
+    });
+
+    _passwordFocusNode.addListener(() {
+      setState(() {
+        //Redraw so that the password label reflects the focus state
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,24 +47,31 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
             SizedBox(height: 120.0),
-            // TODO: Wrap Username with AccentColorOverride (103)
-            // TODO: Remove filled: true values (103)
-            // TODO: Wrap Password with AccentColorOverride (103)
             TextField(
               controller: _usernameController,
               decoration: InputDecoration(
-                filled: true,
+                //filled: true,
                 labelText: 'Username',
+                labelStyle: TextStyle(
+                    color: _usernameFocusNode.hasFocus
+                        ? Theme.of(context).accentColor
+                        : _unfocusedColor),
               ),
+              focusNode: _usernameFocusNode,
             ),
             SizedBox(height: 12.0),
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(
-                filled: true,
+                //filled: true,
                 labelText: 'Password',
+                labelStyle: TextStyle(
+                    color: _passwordFocusNode.hasFocus
+                        ? Theme.of(context).accentColor
+                        : _unfocusedColor),
               ),
               obscureText: true,
+              focusNode: _passwordFocusNode,
             ),
             ButtonBar(
               children: <Widget>[
