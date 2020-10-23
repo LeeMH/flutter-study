@@ -17,6 +17,8 @@ import 'package:intl/intl.dart';
 import 'model/products_repository.dart';
 import 'model/product.dart';
 import 'model/products_repository.dart';
+import 'model/products_repository.dart';
+import 'supplemental/asymmetric_view.dart';
 
 class HomePage extends StatelessWidget {
   // TODO: Make a collection of cards (102)
@@ -58,11 +60,8 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        padding: EdgeInsets.all(16.0),
-        childAspectRatio: 8.0 / 9.0,
-        children: _buildGridCards(context),
+      body: AsymmetricView(
+        products: ProductsRepository.loadProducts(Category.all),
       ),
       resizeToAvoidBottomInset: false,
     );
