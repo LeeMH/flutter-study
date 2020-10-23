@@ -54,3 +54,27 @@ ShrineApp를 호출하고 HomePage를 호출한다. 이후 login화면을 열게
               ],
             ),
 ```
+
+
+## MDC102
+로그인이후 홈화면을 구성한다.
+상단 Appbar에 화면설명과 메뉴, 검색, 필터 버튼을 배치한다.
+하단에는 product가 출력되는데, GridView를 사용한다. (ListView와 차이는 확인예정)
+각각의 product은 Card위젯에 이미지와 설명을 포함하여 출력된다.
+
+이미지와 
+```
+      return Card(
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 18 / 11,
+              child: Image.asset(
+                product.assetName,
+                package: product.assetPackage,
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+```
