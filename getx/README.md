@@ -70,3 +70,61 @@ class Controller extends GetxController {
   }
 }
 ```
+참고로, 변수에 .obs를 붙여주면 상태관리가 된다는 명시적인 선언이다.
+이러한 경우, update() 메소드를 호출하지 않아도 자동 갱신된다.
+
+
+## 페이지 전환에서 상태관리
+실제 App을 개발하면, 화면과 화면 전환에서 상태를 주고 받는 일이 많을것이다.
+교재나 문서에는 Provider를 사용해서 변경하고 그를 감지하는 번거로운 방법이 주로 사용된것 같다.
+하지만, getx에서는 이를 드라마틱하게 해결하는것 같다.
+
+우선 getx를 사용하기 위해서는 MaterialApp이 아닌 GetMaterialApp을 사용해야 한다.
+```
+void main() => runApp(GetMaterialApp(home: Sample2()));
+```
+
+우선 Sample2라는 화면에서 전역상태를 관리하는 컨트롤러를 Get프레임워크(?)로 넣어준다.
+이 화면에서만 사용된다면, 이럴 필요가 없지만, 다른 화면으로 전환시 Get프레임 워크에서 관장하는 컨트롤러를 공유하기 위함인것으로 추측된다.
+```
+class Sample2 extends StatelessWidget {
+  final controller = Get.put(Controller());
+```
+
+우선 컨트롤러의 값(상태)를 실시간으로 갱신하기 위해서는 Obs() 객체 안에서 구현하거나,
+GetBuilder<Controller>(), GetX<Controller>() 객체 안에서 구현해야 한다.
+개인적으로 GetX<Controller>가 가장 마음에 들어 해당 방식을 주로 사용한다.
+```
+            GetX<Controller>(
+                builder: (_) => Text(
+                      'clicks: ${controller.count}',
+                    )),
+```
+
+
+이제 화면 전환이다.
+Navigator를 사용하는 대신 Get을 사용한다.
+간단하게 이동한 화면을 넣고 Get.to()하면 된다.
+```
+            RaisedButton(
+              child: Text('Next Route'),
+              onPressed: () {
+                Get.to(Second());
+              },
+            ),
+```
+
+Second화면에서 해당값을 사용하는 예제이다.
+Get.find()를 통해 컨트롤러를 구해오고, ctrl.count 형식으로 값을 사용하면된다.
+위에서는 GetX를 통해 사용했는데, 여기서는 그냥 사용한다.
+차이는 GetX를 사용하면 StatefulWidget에서 setState()한 효과와 동일하다.
+Second 위젯에서는 counter값을 출력하고 변경할 일은 없기때문에, 그냥 사용했다.(StatelessWidget과 같은형식)
+```
+class Second extends StatelessWidget {
+  final Controller ctrl = Get.find();
+  @override
+  Widget build(context){
+     return Scaffold(body: Center(child: Text("${ctrl.count}")));
+  }
+}
+```
