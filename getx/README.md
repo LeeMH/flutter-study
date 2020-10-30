@@ -128,3 +128,73 @@ class Second extends StatelessWidget {
   }
 }
 ```
+
+
+## Locale 관리
+getx 공식 예제를 보면, Locale관리가 나온다.
+다른 라이브러리나 패키지 경험이 없어, 상대적으로 좋은것인지 나쁜것인지 객관적인 판단은 안된다.
+하지만, 상당히 간결하고 사용하기 쉽다.
+
+우선 Locale설정이다.
+MaterialApp 대신 GetMaterialApp을 사용하고, Locale을 설정하면된다.
+Locale 표현할때 2개의 파라메터가 들어간다. 
+표준적인 방법인지는 모르겠지만, 쉽게 영국식 영어, 미국식 영어 이런식으로 같은 언어라도 서브 파트를 하는 구조이다.
+아래는 브라질식 포르투갈어이다.(아마 getx 만든팀이 포르투갈/브라질 계열인듯 하다.)
+```
+  runApp(GetMaterialApp(
+    initialRoute: '/home',
+    defaultTransition: Transition.native,
+    translations: MyTranslations(),
+    locale: Locale('pt', 'BR'),
+```
+
+Locale 변경은 아래와 같다.
+```
+            RaisedButton(
+              child: Text('Change locale to English'),
+              onPressed: () {
+                Get.updateLocale(Locale('en', 'US'));
+              },
+            ),
+```
+
+당연히 Locale변경에 따라 text가 변경되어야 한다.
+이러한 text는 locale별로 미리 정의가 되어 있어야 한다.
+아래와 같이 각 언어별로 정의하고, 외부에서 입력되는 부분은 %s처리하면 된다.
+```
+class MyTranslations extends Translations {
+  @override
+  Map<String, Map<String, String>> get keys => {
+        'en': {
+          'title': 'Hello World %s',
+        },
+        'en_US': {
+          'title': 'from US, first=%s, second=%s',
+        },
+        'pt': {
+          'title': 'Ola de Portugal',
+        },
+        'pt_BR': {
+          'title': 'Ola do Brasil',
+        }
+      };
+}
+```
+
+그럼 실제 사용은 어떨까?
+아래 예제에서 "title".trArgs()부분이다.
+trArgs가 getx에 포함되는 문법인지 flutter에 종속되는 문법인지는 모르겠지만,
+.trArgs를 사용하면 Translation에 등록된 text목록에서 문장을 찾는다.
+뒤에 입력은 파라메터이다. 갯수가 모자라거나 남아도 에러는 발생하지 않는다.
+다만, 모자라면 %s로 그냥 출력되는 부분이 존재한다.
+```
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () {
+            Get.snackbar("hi", "I'm modern snackbar");
+          },
+        ),
+        title: Text("title".trArgs(['John', 'Mike'])),
+      ),
+```

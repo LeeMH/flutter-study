@@ -23,8 +23,6 @@ class HomeView extends GetView<HomeController> {
       ));
 }
 
-mixin Controller {}
-
 class HomeBinding implements Bindings {
   @override
   void dependencies() {
