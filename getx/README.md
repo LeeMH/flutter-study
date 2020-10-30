@@ -198,3 +198,95 @@ trArgs가 getx에 포함되는 문법인지 flutter에 종속되는 문법인지
         title: Text("title".trArgs(['John', 'Mike'])),
       ),
 ```
+
+
+## controller 사용법의 다양한 예
+[getx공식 예제](https://pub.dev/packages/get/example)의 마지막을 보면 컨트롤러를 사용하는 다양한 방법이 제공된다.
+앞에서 주로 사용했던 GetX<컨트롤러 명> or GetBuilder<컨트롤러 명>을 사용하는 방식이다.
+예제에서는 GetView 클래스를 확장하는 방법도 제시된다.
+이렇게 사용되는 경우, controller는 주입된 ControllerX로 매핑되는 구조인것 같다.
+예제에서 _.count2나 controller.count2나 동일한 결과가 출력된다.
+또, 여러개의 controller를 사용해야 하는경우, 제네릭으로 주입받은 컨트롤러는 그대로 사용하고,
+GetBuilder or GetX를 통해 다른 컨트롤러도 같이 사용 가능하다.
+```
+class Second extends GetView<ControllerX> {
+...
+...
+            GetX<ControllerX>(
+              builder: (_) {
+                print("count2 rebuild");
+                return Text('${controller.count2}');
+              },
+            ),
+            GetX<ControllerX>(builder: (_) {
+              print("sum rebuild");
+              return Text('${_.sum}');
+            }),
+```
+
+
+## widget 전환시 파라메터 전달 방법
+A -> B위젯으로 전환시 파라메터를 전송해야 하는경우가 있다.
+물론 컨트롤러를 통해 상태로 관리할수도 있으나, 일회성인경우 이건 낭비일 것이다.
+아래와 같이 arguments를 통해 이동할 위젯으로 파라메터 전송이 가능하다.
+```
+            RaisedButton(
+              child: Text("Go to last page"),
+              onPressed: () {
+                Get.toNamed('/third', arguments: 'arguments of second');
+              },
+```
+
+받는쪽에서는 아래와 같이 사용하면 된다.
+arguments 속성은 dynamic이고, 당연히 array로 전송도 가능하다.
+```
+      appBar: AppBar(
+        title: Text("Third ${Get.arguments}"),
+      ),
+```
+
+
+## Controller 초기화 관련 여러가지 옵션
+Worker는 이벤트 리스너 어쩌구 하는데, 정확히 왜, 어떤 용도인지 모르겠다.
+다만, 이벤트 리스너로 이벤트를 핸들링하기 위해 선언되어야 하는것 같다.(일단 이렇게 간단하게 세뇌하자.)
+onInit()에서 다양한 일들을 수행한다.
+ever, everAll통해 상태가 변경되면 트리거로 동작할수 있는 메소드/행동을 정의할수있다.
+또, debounce을 통해 ddos를 방지할수 있다고 한다.
+아직 구체적으로 어떤식으로 잘 활용할수 있는지는 떠오르지 않지만, 잘 활용하면 좋은 아키텍쳐를 잡을수 있을것 같다는 확신은 든다.
+```
+  /// made this if you need cancel you worker
+  Worker _ever;
+
+  @override
+  onInit() {
+    /// Called every time the variable $_ is changed
+    _ever = ever(count1, (_) => print("$_ has been changed (ever)"));
+
+    everAll([count1, count2], (_) => print("$_ has been changed (everAll)"));
+
+    /// Called first time the variable $_ is changed
+    once(count1, (_) => print("$_ was changed once (once)"));
+
+    /// Anti DDos - Called every time the user stops typing for 1 second, for example.
+    debounce(count1, (_) => print("debouce$_ (debounce)"),
+        time: Duration(seconds: 1));
+
+    /// Ignore all changes within 1 second.
+    interval(count1, (_) => print("interval $_ (interval)"),
+        time: Duration(seconds: 1));
+  }
+
+  int get sum => count1.value + count2.value;
+
+  increment() => count1.value++;
+
+  increment2() => count2.value++;
+
+  disposeWorker() {
+    _ever.dispose();
+    // or _ever();
+  }
+
+  incrementList() => list.add(75);
+}
+```

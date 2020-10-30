@@ -114,10 +114,13 @@ class Second extends GetView<ControllerX> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            GetBuilder<Controller>(
+              builder: (_) => Text('clicks: ${_.count}'),
+            ),
             GetX<ControllerX>(
               builder: (_) {
                 print('count1 rebuild');
-                return Text('${_.count1}');
+                return Text('${_.count1} ==> ${controller.count1}');
               },
             ),
             GetX<ControllerX>(
@@ -141,7 +144,7 @@ class Second extends GetView<ControllerX> {
             RaisedButton(
               child: Text('Go to last page'),
               onPressed: () {
-                Get.toNamed('/third', arguments: 'arguments of second');
+                Get.toNamed('/third', arguments: ['arguments of second', 1]);
               },
             ),
             RaisedButton(
@@ -195,7 +198,7 @@ class Third extends GetView<ControllerX> {
         },
       ),
       appBar: AppBar(
-        title: Text('Third ${Get.arguments}'),
+        title: Text('Third ${Get.arguments[0]}, ${Get.arguments[1]}'),
       ),
       body: Center(
         child: Obx(
@@ -242,7 +245,7 @@ class ControllerX extends GetxController {
   Worker _ever;
 
   @override
-  onInit() {
+  onInit() async {
     /// Called every time the variable $_ is changed
     _ever = ever(count1, (_) => print("$_ has been changed (ever)"));
 
